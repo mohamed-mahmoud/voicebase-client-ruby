@@ -10,17 +10,7 @@ module VoiceBase
       end
 
       def authenticate!
-        auth = {:username => @auth_key, :password => @auth_secret}
-        response = VoiceBase::Response.new(
-          self.class.get(
-            uri + '/access/users/admin/tokens',
-            basic_auth: auth,
-            headers: {
-              'User-Agent'   => @user_agent,
-              'Accept'       => 'application/json'
-            }
-          ), api_version)
-        @token = VoiceBase::Client::Token.new(response.tokens.try(:first).try(:[], 'token'))
+        @token = VoiceBase::Client::Token.new(@auth_key)
       rescue NoMethodError => ex
         raise VoiceBase::AuthenticationError, response.status_message
       end
